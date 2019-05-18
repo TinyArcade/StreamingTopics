@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <style>
+      body {
+        font-size: 160%;
+        font-family: helvetica;
+        text-transform: capitalize;
+        font-weight: bold;
+      }
+
+      h3 {
+        font-family: helvetica;
+      }
+
+    </style>
+
+    <body>
+      <h3>Streaming Topics</h3>
+
+      <script>
+        $(document).ready(function() {
+          $.getJSON("https://spreadsheets.google.com/feeds/cells/1eDZ1crKHGHe5OoW-sweQ0Hb-aPnVimBj7wJishQ1CKk/1/public/full?alt=json", function(data) {
+            //first row "title" column
+            var entry = data.feed.entry;
+            var firstcolumn = []; // the leftmost column of the Google Sheets
+            var topic = ['gsx$topic'];
+            var i = 0;
+
+            for (var i = 1; i < entry.length; i++) {
+              // entry[i].content.$t retrieves the content of each cell
+              firstcolumn.push(entry[i].content.$t);
+
+            }
+
+
+            var index = 0;
+
+            $("#topic").append(firstcolumn[index]);
+
+
+
+            var timerVar = setInterval(function() {
+
+              index++
+
+              //$("#topic").replaceWith(firstcolumn[index]);
+
+              $("#topic").fadeOut(400, function() {
+                $(this).text(firstcolumn[index % firstcolumn.length]).fadeIn(400);
+
+              });
+
+              if (index == firstcolumn.length) { //All the words are displayed clear interval
+                $("#topic").remove();
+                clearInterval(timerVar);
+
+
+
+              }
+            }, 9000);
+
+          });
+
+        });
+
+      </script>
+
+      <div id="topic"></div>
+    </body>
+
+</html>
